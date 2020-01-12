@@ -1,3 +1,8 @@
+html {
+	width: 100%;
+	height: 100%
+}
+
 * {
 	margin: 0;
 	padding: 0;
@@ -19,7 +24,7 @@ body {
 }
 
 .container {
-	width: 100vw;
+	width: 100%;
 	min-height: 100vh;
 	max-height: max-content;
 }
@@ -35,10 +40,17 @@ body {
 
 .wrapper-input-field {
 	position: relative;
-	width: 80vw;
-	min-height: 70vh;
+    width: 75vw;
+	min-height: 72vh;
 	max-height: max-content;
 	background-color: #202225;
+	margin-bottom: 2%;
+}
+
+.wrapper-input-field:after {
+	display:block;
+	clear:both;
+	content:"";
 }
 
 .img {
@@ -48,6 +60,7 @@ body {
 }
 
 .input-field {
+	position: absolute;
 	justify-self: center;
 	z-index: 1;
 }
@@ -86,22 +99,35 @@ body {
 }
 
 .image-field {
-	position: absolute;
-	width: 100%;
+	/*width: 100%;*/
 	height: 100%;
 	z-index: 0;
 	display: grid;
-	grid-template-rows:  1fr 1fr;
-	grid-template-columns:  1fr 1fr 1fr 1fr;
-	align-items: center;
+	grid-gap: 25px 25px;
+	/*grid-auto-rows:  repeat(4, dense );
+	grid-template-columns:  repeat(5, dense );*/
+	grid-template:
+		"img img img img img" auto
+		"img img img img img" auto
+		"img img img img img" auto
+		"img img img img img" auto
+		/ 1fr 1fr 1fr 1fr 1fr
+	;
+	align-items: start;
+	justify-items: center;
+	padding: 25px;
 }
 
 .img-block {
 	justify-self: center;
-	width: 70%;
-	min-height: 90%;
+	width: 100%;
+	min-height: 10%;
 	height: max-content;
 	background-color: #282B30;
+}
+
+.img-load-block {
+	width: 100%;
 }
 
 .img-load {
@@ -109,17 +135,11 @@ body {
 }
 
 .img-name {
-	display: flex;
-	justify-content: center;
-	background-color: #282B30;
+	display: block;
+	text-align: center;
 	color: #ffffff;
 	width: 100%;
 	height: max-content;
 	word-wrap: break-word;
-}
-
-.img-block2 {
-	width: 15%;
-	height: max-content;
-	background-color: #282B30;
+	white-space: pre-wrap;
 }
