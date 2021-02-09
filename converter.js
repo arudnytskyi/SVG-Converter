@@ -1,109 +1,134 @@
-const selectInput = document.querySelector("#select-input")
-const imageFieldChoice = document.querySelector("#image-field-choice")
+const dropArea = document.querySelector('#drop-area')
+const selectInput = document.querySelector('#select-input')
+const gallery = document.querySelector('#gallery')
 
-selectInput.addEventListener("change", function informFile(input) {
-	const imgsArray = [...this.files]
-	let imgNumber = 0
-	imgsArray.forEach(img => {
+dropArea.addEventListener('dragenter', highlight, false)
+dropArea.addEventListener('dragover', highlight, false)
+dropArea.addEventListener('dragleave', unhighlight, false)
+dropArea.addEventListener('drop', unhighlight, false)
+dropArea.addEventListener('drop', handleDrop, false)
 
-		const imgBlock = document.createElement("div")
-		imgBlock.classList.add("img-block")
+function highlight(e) {
+  e.stopPropagation()
+  e.preventDefault()
+  dropArea.classList.add('highlight')
+  }
 
-		const canvas = document.createElement("canvas")
-		const context = canvas.getContext("2d")
-		canvas.classList.add("img-load-block")
-		canvas.id = "imgCanvas"
+function unhighlight(e) {
+  e.stopPropagation()
+  e.preventDefault()
+  dropArea.classList.remove('highlight')
+}
 
-		const imgElement = document.createElement("img")
-		imgElement.classList.add("img-load")
-		imgElement.id = "img-load"
+function handleDrop(e) {
+  let files = e.target.files || e.dataTransfer.files
+  informFile(files)
+}
 
-		const imgName = document.createElement("h3")
-		imgName.classList.add("img-name")
-		imgName.textContent = img.name
-
-		const reader = new FileReader()
-
-		reader.readAsDataURL(imgsArray[imgNumber])
-
-		reader.addEventListener("load", function getImgUrl(img) {
-			imgElement.src = img.target.result
-			let imgUrl = imgElement.src
-		})
-
-		imageFieldChoice.appendChild(imgBlock)
-		imgBlock.appendChild(canvas)
-		canvas.appendChild(imgElement)
-		imgBlock.appendChild(imgName)
-
-		imgElement.addEventListener("load", (img) => {
-			if (imgsArray.indexOf(imgElement) != undefined) {
-				let imgWidth = imgElement.naturalWidth
-				let imgHeight = imgElement.naturalHeight
-
-				canvas.width = imgWidth
-				canvas.height = imgHeight
-				context.drawImage(imgElement, 0, 0, imgWidth, imgHeight)
-
-				let imgData = context.getImageData(0, 0, imgWidth, imgHeight)
-				console.log(imgData.data)
-				getPixelData (imgData)
-
-			} else {
-				imgName.textContent = "An error occurred while loading the image"
-			}
-		})
-
-		function getPixelData (imgData, imgWidth, imgHeight) {
-			const allPixel = []
-			for (let i = 0; i < imgData.data.length; i+=4) {
-				const pixelData = {
-					red		: +imgData.data[i],
-					green	: +imgData.data[i+1],
-					blue	: +imgData.data[i+2],
-					alpha	: imgData.data[i+3] * 0.00392156862745098
-				}
-				allPixel.push(pixelData)
-			}
-			console.log(allPixel.length)
-			return createSvgImg(imgData, imgWidth, imgHeight, allPixel)
-		}
-
-		function createSvgImg (imgData, imgWidth, imgHeight, allPixel) {
-			const svgArray = []
-			const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-			let rectSize = canvas.width / allPixel.length
-			let rectSVGX = 0
-			let rectSVGY = 0
-			svg.setAttribute("width", canvas.width)
-			svg.setAttribute("height", canvas.height)
-			svg.setAttribute("viewBox", `0, 0, ${canvas.width}, ${canvas.height}`)
-
-			imageFieldChoice.appendChild(svg)
-
-			for(let i = 0; i < allPixel.length; i++) {
-				const rectSVG = document.createElement("rect")
-				rectSVG.id = "square"
-				let rectLength = document.querySelectorAll("#square").length - 2
-				rectSVG.setAttribute("fill", `rgba(${allPixel[i].red}, ${allPixel[i].green}, ${allPixel[i].blue}, ${allPixel[i].alpha})`)
-				rectSVG.setAttribute("width", 1)
-				rectSVG.setAttribute("height", 1)
-				rectSVG.setAttribute("x", rectSVGX)
-				rectSVG.setAttribute("y", rectSVGY)
-				if (rectSVGX < canvas.width - 1) 
-				{rectSVGX = rectSVGX + 1}
-				else {
-					rectSVGX = 0 
-					rectSVGY = rectSVGY + 1
-				}
-				svgArray.push(rectSVG)
-				svg.appendChild(rectSVG)
-				if (rectSVG.getAttribute("fill") == `rgba(0, 0, 0, ${allPixel[i].alpha})`) 
-					{svg.removeChild(rectSVG)}
-			console.log(svgArray)
-			console.log(svg)
-			}
-		}
-		return imgNumber++
-	})
+selectInput.addEventListener('change', (input) => {
+  const files = input.target.files
+  return informFile (files)
 })
+
+async function informFile(input) {
+  const files = [...input]
+  await Promise.all(files.map(f=>{return readAsDataURL(f)}))
+
+  function readAsDataURL(file) {
+    return new Promise((resolve, reject)=>{
+      const fileReader = new FileReader()
+      fileReader.addEventListener('load', () => {
+        const img =	new Image()
+        img.src = fileReader.result
+        img.addEventListener('load', () => {
+          return resolve(
+            createHTMLElement(img, file.name),
+            imgData = createCanvas(img),
+            allPixel = getPixelData (imgData),
+            createSvgImg (img, allPixel)
+          )
+        })
+      })
+      fileReader.readAsDataURL(file)
+    })
+  }
+
+  function createHTMLElement(img,name) {
+    const imgBlock = document.createElement('div')
+    imgBlock.classList.add('img-block')
+
+    img.classList.add('img-load')
+    img.id = 'img-load'
+
+    const progressBar = document.createElement('div')
+    progressBar.classList.add('progressbar')
+
+    const progressLine = document.createElement('span')
+    progressLine.id = 'progressLine'
+    progressLine.setAttribute('style', 'width: 0%')
+
+    const imgName = document.createElement('h3')
+    imgName.classList.add('img-name')
+    imgName.textContent = name
+
+    gallery.appendChild(imgBlock)
+    imgBlock.appendChild(img)
+    imgBlock.appendChild(progressBar)
+    progressBar.appendChild(progressLine)
+    imgBlock.appendChild(imgName)
+  }
+
+  function createCanvas (img) {
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+
+    context.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
+    return imgData = context.getImageData(0, 0, img.naturalWidth, img.naturalHeight)
+  }
+
+  function getPixelData (imgData) {
+    const allPixel = []
+    for (let i = 0; i < imgData.data.length; i+=4) {
+      const pixelData = {
+        red		: +imgData.data[i],
+        green	: +imgData.data[i+1],
+        blue	: +imgData.data[i+2],
+        alpha	: imgData.data[i+3] * 0.003921
+      }
+      allPixel.push(pixelData)
+    }
+    return allPixel
+  }
+
+  function createSvgImg (img, allPixel) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    let rectX = 0
+    let rectY = 0
+    svg.setAttribute('width', img.naturalWidth)
+    svg.setAttribute('height', img.naturalHeight)
+    svg.setAttribute('viewBox', `0, 0, ${img.naturalWidth}, ${img.naturalHeight}`)
+
+    for(let i = 0; i < allPixel.length; i++) { // 10000
+      const rect = document.createElement('rect')
+      rect.id = 'square'
+      rect.setAttribute('fill', `rgba(${allPixel[i].red}, ${allPixel[i].green}, ${allPixel[i].blue}, ${allPixel[i].alpha})`)
+      rect.setAttribute('width', 1)
+      rect.setAttribute('height', 1)
+      rect.setAttribute('x', rectX)
+      rect.setAttribute('y', rectY)
+
+      gallery.appendChild(svg)
+
+      if (rectX < img.naturalWidth - 1) {
+        rectX = rectX + 1
+      } else {
+        rectX = 0
+        rectY = rectY + 1
+      }
+      
+      if (rect.getAttribute('fill') != 'rgba(0, 0, 0, 0)') {
+        svg.appendChild(rect)
+      }	
+    }
+  }
+}
