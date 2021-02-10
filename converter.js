@@ -93,7 +93,7 @@ async function informFile(input) {
         red		: +imgData.data[i],
         green	: +imgData.data[i+1],
         blue	: +imgData.data[i+2],
-        alpha	: imgData.data[i+3] * 0.003921
+        alpha	: imgData.data[i+3] * 0.003
       }
       allPixel.push(pixelData)
     }
@@ -107,8 +107,10 @@ async function informFile(input) {
     svg.setAttribute('width', img.naturalWidth)
     svg.setAttribute('height', img.naturalHeight)
     svg.setAttribute('viewBox', `0, 0, ${img.naturalWidth}, ${img.naturalHeight}`)
+    
+    const frag = document.createDocumentFragment()
 
-    for(let i = 0; i < allPixel.length; i++) { // 10000
+    for(let i = 0; i < allPixel.length; i++) {
       const rect = document.createElement('rect')
       rect.id = 'square'
       rect.setAttribute('fill', `rgba(${allPixel[i].red}, ${allPixel[i].green}, ${allPixel[i].blue}, ${allPixel[i].alpha})`)
@@ -116,8 +118,6 @@ async function informFile(input) {
       rect.setAttribute('height', 1)
       rect.setAttribute('x', rectX)
       rect.setAttribute('y', rectY)
-
-      gallery.appendChild(svg)
 
       if (rectX < img.naturalWidth - 1) {
         rectX = rectX + 1
@@ -127,8 +127,10 @@ async function informFile(input) {
       }
       
       if (rect.getAttribute('fill') != 'rgba(0, 0, 0, 0)') {
-        svg.appendChild(rect)
-      }	
+        frag.appendChild(rect)
+      }
     }
+    svg.appendChild(frag)
+    gallery.appendChild(svg)
   }
 }
