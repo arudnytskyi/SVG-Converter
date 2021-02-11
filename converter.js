@@ -41,11 +41,14 @@ async function informFile(input) {
         const img =	new Image()
         img.src = fileReader.result
         img.addEventListener('load', () => {
+          createHTMLElement(img, file.name)
+          const imgData = createCanvas(img)
+          const allPixel = getPixelData (imgData)
+          const svg = createSvgImg (img, allPixel)
+          const URLsvg = svgDataURL(svg)
+          const fileName = file.name.replace(/\.[^/.]+$/, "")
           return resolve(
-            createHTMLElement(img, file.name),
-            imgData = createCanvas(img),
-            allPixel = getPixelData (imgData),
-            createSvgImg (img, allPixel)
+            saveAsFile(fileName, URLsvg)
           )
         })
       })
@@ -111,7 +114,7 @@ async function informFile(input) {
     const frag = document.createDocumentFragment()
 
     for(let i = 0; i < allPixel.length; i++) {
-      const rect = document.createElement('rect')
+      const rect = document.createElementNS('rect')
       rect.id = 'square'
       rect.setAttribute('fill', `rgba(${allPixel[i].red}, ${allPixel[i].green}, ${allPixel[i].blue}, ${allPixel[i].alpha})`)
       rect.setAttribute('width', 1)
@@ -132,5 +135,23 @@ async function informFile(input) {
     }
     svg.appendChild(frag)
     gallery.appendChild(svg)
+  }
+  
+  function svgDataURL(svg) {
+    const svgAsXML = (new XMLSerializer).serializeToString(svg)
+    return encodeURIComponent(svgAsXML)
+  }
+
+  function saveAsFile(fileName, data = '', postfix = (+(new Date)).toString()) {
+    const lnk = document.createElement('a')
+    lnk.href = `data:image/svg+xml;content-disposition=attachment;filename=${fileName},${data}`
+    lnk.download = fileName
+    lnk.target = '_blank'
+    lnk.style.display = 'none'
+    lnk.id = `downloadlnk-${postfix}`
+    console.log(lnk)
+    document.querySelector('.img-block').appendChild(lnk)
+    lnk.click()
+    document.querySelector('.img-block').removeChild(lnk)
   }
 }
