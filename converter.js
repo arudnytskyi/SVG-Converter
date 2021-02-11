@@ -134,11 +134,10 @@ async function informFile(input) {
       }
     }
     svg.appendChild(frag)
-    gallery.appendChild(svg)
   }
   
   function svgDataURL(svg) {
-    const svgAsXML = (new XMLSerializer).serializeToString(svg)
+    const svgAsXML = (new XMLSerializer()).serializeToString(svg)
     return encodeURIComponent(svgAsXML)
   }
 
