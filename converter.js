@@ -114,7 +114,7 @@ async function informFile(input) {
     const frag = document.createDocumentFragment()
 
     for(let i = 0; i < allPixel.length; i++) {
-      const rect = document.createElement('rect')
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
       rect.id = 'square'
       rect.setAttribute('fill', `rgba(${allPixel[i].red}, ${allPixel[i].green}, ${allPixel[i].blue}, ${allPixel[i].alpha})`)
       rect.setAttribute('width', 1)
@@ -149,7 +149,6 @@ async function informFile(input) {
     lnk.target = '_blank'
     lnk.style.display = 'none'
     lnk.id = `downloadlnk-${postfix}`
-    console.log(lnk)
     document.querySelector('.img-block').appendChild(lnk)
     lnk.click()
     document.querySelector('.img-block').removeChild(lnk)
