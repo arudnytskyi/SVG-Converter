@@ -114,7 +114,7 @@ async function informFile(input) {
     const frag = document.createDocumentFragment()
 
     for(let i = 0; i < allPixel.length; i++) {
-      const rect = document.createElementNS('rect')
+      const rect = document.createElement('rect')
       rect.id = 'square'
       rect.setAttribute('fill', `rgba(${allPixel[i].red}, ${allPixel[i].green}, ${allPixel[i].blue}, ${allPixel[i].alpha})`)
       rect.setAttribute('width', 1)
