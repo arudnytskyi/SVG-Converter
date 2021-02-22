@@ -1,44 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<link href="https://fonts.googleapis.com/css?family=Nunito&display=swap&subset=cyrillic-ext" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="converter.css">
-	<title>SVG Сonverter</title>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap&subset=cyrillic-ext" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="converter.css">
+  <title>SVG Сonverter</title>
 </head>
 <body>
-	<div class="wrapper-container">
-		<div class="container">
+  <h1 class="title">SVG Сonverter</h1>
+  <div id="drop-area">
+    <form class="input-field">
+      <div class="insertion-methods">
+        <span class="title-paste-img">Paste the image</span>
+        <span class="or">Or</span>
+        <input type="file" name="file" id="select-input" class="select-file-input" multiple accept="image/*">
+        <label for="select-input"><b>Choose a file</b></label>
+      </div>
+    </form>
 
-			<div class="title-wrapper">
-				<h1 class="title">SVG Сonverter</h1>
-			</div>
-
-			<div class="wrapper-input-field">
-
-				<div class="input-field">
-					<div class="insertion-methods">
-						<h1 class="title-paste-img">Paste the image</h1>
-						<h2 class="or">Or</h2>
-						<input type="file" name="file" id="select-input" class="select-file-input" multiple accept="image/*">
-						<label for="select-input"><b>Choose a file</b></label>
-					</div>
-				</div>
-
-				<div class="image-field" id="image-field-choice">	
-					<!-- <div class="img-block">
-						<div class="img-load-block">
-							<img src="C:\Users\nazar\Desktop\Home - копия\img\img.png" class="img-load">
-						</div>
-						<h3 class="img-name">aesf</h3>
-					</div> -->
-				</div>
-
-			</div>
-
-		</div>
-	</div>
-
-	<script src="converter.js"></script>
+    
+    <div id="gallery">
+      <!-- <div class="img-block">
+        <img class="img-load" id="img-load" src="https://i.pinimg.com/564x/a8/e4/aa/a8e4aa724a37407e111539c50564c3ea.jpg">
+        <a class="download-file" download="">
+          <svg height="512pt" viewBox="0 0 512 512" width="512pt" xmlns="http://www.w3.org/2000/svg">
+            <path d="m409.785156 278.5-153.785156 153.785156-153.785156-153.785156 28.285156-28.285156 105.5 105.5v-355.714844h40v355.714844l105.5-105.5zm102.214844 193.5h-512v40h512zm0 0"/>
+          </svg>
+        </a>
+        <div class="progressbar">
+          <span id="progressLine" style="width: 0%"></span>
+        </div>
+        <h3 class="img-name">googlefit.png</h3>
+      </div> -->
+    </div>
+  </div>
+  
+  <script type="module" src="main.js"></script>
+  <script type="module" src="./js/createHTMLElement.js"></script>
+  <script type="module" src="./js/data-pixel.js"></script>
+  <script type="module" src="./js/createSVG.JS"></script>
+  <script type="module" src="./js/uploadSVG.js"></script>
 </body>
 </html>
